@@ -60,7 +60,7 @@ Sure! Both pull and push requests are welcome. If you would like to make any maj
 
     <div></div> <!-- nests a block of content; a container -->
 
-</body> <!-- a closing body tag>
+</body> <!-- a closing body tag -->
 
 ```
 ## License
