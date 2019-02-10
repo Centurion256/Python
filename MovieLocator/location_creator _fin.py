@@ -8,8 +8,6 @@ def file_reader(films, years):
             locations[line[-1]] = 0
 
         locations[line[-1]] += 1
-    for key in locations:
-        print(key, locations[key])
     
     return locations
 
@@ -19,11 +17,6 @@ def info_generator(source, year):
     import re
     line = []
     line_prev = line
-    """
-    if re.match("\(\d{4} - \d{4}", years) != None:
-        
-        years = tuple(re.split(" - ", years))
-    """
 
     while line_prev != '' or line != '':
         line_prev = line
@@ -52,10 +45,11 @@ def map_creator(data, name):
     country_data = 'world.json'
     lim = max(data.values())
     third_lim = 50 if int(lim**1/4) > 50 else int(lim**1/4)
-    colorscale = branca.colormap.LinearColormap(colors=['white','green', 'yellow', 'red', 'black'],
-                                                index=[0,1,third_lim, int(lim**1/2), lim+1])
-    print(lim)
+    colorscale = branca.colormap.LinearColormap(colors=['white', 'green', 'yellow', 'red', 'black'],
+                                                index=[0, 1, third_lim, int(lim**1/2), lim+1])
+
     def fix_names(country):
+
         transcriber = {
             'United States': 'USA',
             'United Kingdom': 'UK',
@@ -75,20 +69,23 @@ def map_creator(data, name):
 
         return transcriber[country] if country in transcriber else country
 
-    map_custom = folium.Map(location=[51.4826, 0.0],zoom_start=5,min_zoom=3,max_zoom=20,max_bounds=True,prefer_canvas=True,no_wrap=True,tiles='Mapbox Bright')
+    map_custom = folium.Map(location=[51.4826, 0.0],
+                            zoom_start=5, min_zoom=3, max_zoom=20, max_bounds=True, prefer_canvas=True, no_wrap=True,
+                            tiles='Mapbox Bright')
     fg1 = folium.FeatureGroup(name="Movies filmed", overlay=False)
 
     folium.GeoJson(data=open(country_data, 'r', encoding='utf-8-sig').read(),
-                    tooltip=folium.features.GeoJsonTooltip(fields=['NAME']),
-                    style_function=lambda x: {'fillColor': colorscale(data[fix_names(x['properties']['NAME'])]) if fix_names(x['properties']['NAME']) in data else colorscale(0)}).add_to(fg1)
+                   tooltip=folium.features.GeoJsonTooltip(fields=['NAME']),
+                   style_function=lambda x: {'fillColor': colorscale(data[fix_names(x['properties']['NAME'])])
+                   if fix_names(x['properties']['NAME']) in data else colorscale(0)}).add_to(fg1)
     
-    colorscale_pop = branca.colormap.LinearColormap(colors=['white','green', 'yellow', 'red', 'black'],
-                                                index=[0,5000000,100000000, 200000000, 800000000])
+    colorscale_pop = branca.colormap.LinearColormap(colors=['white', 'green', 'yellow', 'red', 'black'],
+                                                    index=[0, 5000000, 100000000, 200000000, 800000000])
 
     fg2 = folium.FeatureGroup(name="Population", overlay=False)
     folium.GeoJson(data=open(country_data, 'r', encoding='utf-8-sig').read(),
-                    tooltip=folium.features.GeoJsonTooltip(fields=['NAME']),
-                    style_function=lambda x: {'fillColor': colorscale_pop(x['properties']['POP2005'])}).add_to(fg2)
+                   tooltip=folium.features.GeoJsonTooltip(fields=['NAME']),
+                   style_function=lambda x: {'fillColor': colorscale_pop(x['properties']['POP2005'])}).add_to(fg2)
     map_custom.add_child(fg1)
     map_custom.add_child(fg2)
     map_custom.add_child(folium.LayerControl())
@@ -101,10 +98,12 @@ if __name__ == "__main__":
         try:
             year = int(input('Please enter a year between 1890 and 2015: '))
             if year not in range(1890,2016):
-                input('Incorrect input. Are you sure the year entered is between 1890 and 2015? Press \'Enter\' to relaunch the program or Ctrl+C to quit. ')
+                input('Incorrect input. Are you sure the year entered is between 1890 and 2015? Press \'Enter\' to '
+                      'relaunch the program or Ctrl+C to quit. ')
                 continue
         except:
-            input('Incorrect input. Are you sure you entered a number? Press \'Enter\' to relaunch the program or Ctrl+C to quit. ')
+            input('Incorrect input. Are you sure you entered a number? Press \'Enter\' to relaunch the program or '
+                  'Ctrl+C to quit. ')
             continue
         break
     movie_by_country = file_reader('locations.list', year)
